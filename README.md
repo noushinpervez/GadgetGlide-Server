@@ -1,6 +1,6 @@
 # GadgetGlide Server
 
-## Overview
+## Project Overview
 
 GadgetGlide Server is the backend for the GadgetGlide web application, built using Node.js, Express and MongoDB. It provides the API endpoints necessary for managing and fetching product data, implementing search, filtering, sorting and pagination functionalities.
 
@@ -10,6 +10,12 @@ GadgetGlide Server is the backend for the GadgetGlide web application, built usi
 - **Filtering**: Filter products by category, brand and price range.
 - **Sorting**: Sort products by price or date added.
 - **Pagination**: Efficiently paginate through product listings.
+
+## Live Site
+[Visit GadgetGlide](https://gadgetglide.netlify.app/)
+
+## Client Repository
+[GadgetGlide Client Repository](https://github.com/noushinpervez/GadgetGlide-Client)
 
 ## Getting Started
 
@@ -38,8 +44,8 @@ GadgetGlide Server is the backend for the GadgetGlide web application, built usi
    Create a `.env` file in the root directory and add the following variables:
 
    ```env
-   DB_USER=<mongodb-username>
-   DB_PASS=<mongodb-password>
+   DB_USER=gadgetGlide
+   DB_PASS=fIckZXw1E7Y2vkeC
    ```
 
 4. **Run the server**
@@ -101,3 +107,5 @@ Fetches a list of products with optional filters, sorting and pagination.
   "totalPages": 5
 }
 ```
+
+Follow these instructions to set up and locally run the server-side of GadgetGlide to explore its features and functionalities.
