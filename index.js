@@ -28,6 +28,58 @@ async function run() {
 
         const productCollection = client.db('gadgetDB').collection('products');
 
+        // GET all products
+        app.get('/products', async (req, res) => {
+            try {
+                const { search, category, brandName, priceSort, dateSort, page = 1, limit = 10 } = req.query;
+                const query = {};
+
+                // Implementing search
+                if (search) {
+                    query.$or = [
+                        { productName: new RegExp(search, 'i') },
+                        { category: new RegExp(search, 'i') },
+                        { brandName: new RegExp(search, 'i') },
+                    ];
+                }
+
+                // Implementing category filter
+                if (category) {
+                    const categories = category.split(',').map(c => c.trim());
+                    query.category = { $in: categories };
+                }
+
+                // Implementing brand filter
+                if (brandName) {
+                    const brands = brandName.split(',').map(b => b.trim());
+                    query.brandName = { $in: brands };
+                }
+
+                // Implementing pagination
+                const options = {
+                    skip: (page - 1) * limit,
+                    limit: parseInt(limit),
+                };
+
+                // Implementing sorting
+                if (priceSort) {
+                    options.sort = { price: priceSort === 'asc' ? 1 : -1 };
+                }
+                if (dateSort) {
+                    options.sort = { creationDateTime: dateSort === 'asc' ? 1 : -1 };
+                }
+
+                const cursor = productCollection.find(query, options);
+                const products = await cursor.toArray();
+                const total = await productCollection.countDocuments(query);
+
+                res.json({ products, totalPages: Math.ceil(total / limit) });
+            } catch (error) {
+                console.error(error);
+                res.status(500).send('Server error');
+            }
+        });
+
         // Send a ping to confirm a successful connection
         // await client.db('admin').command({ ping: 1 });
         console.log('Pinged your deployment. You successfully connected to MongoDB!');
