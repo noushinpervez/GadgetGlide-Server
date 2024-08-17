@@ -43,9 +43,23 @@ GadgetGlide Server is the backend for the GadgetGlide web application, built usi
    ```
 
 4. **Run the server**
+   
+   ```bash
+   node index.js
+   ```
+   
+   **Or,**
+   
+   For development purposes, `nodemon` can be used to automatically restart the server on file changes:
+
+   **Install `nodemon` and run the server**
 
    ```bash
-   npm start
+   npm i nodemon
+   ```
+
+   ```bash
+   nodemon index.js
    ```
 
    The server will start on `http://localhost:5000`.
