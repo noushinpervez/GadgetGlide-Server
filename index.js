@@ -31,7 +31,7 @@ async function run() {
         // GET all products
         app.get('/products', async (req, res) => {
             try {
-                const { search, category, brandName, priceSort, dateSort, page = 1, limit = 10 } = req.query;
+                const { search, category, brandName, priceSort, dateSort, page = 1, limit = 9, minPrice, maxPrice } = req.query;
                 const query = {};
 
                 // Implementing search
@@ -43,10 +43,25 @@ async function run() {
                     ];
                 }
 
+                // Implementing sorting
+                if (priceSort) {
+                    options.sort = { price: priceSort === 'asc' ? 1 : -1 };
+                }
+                if (dateSort) {
+                    options.sort = { creationDateTime: dateSort === 'asc' ? 1 : -1 };
+                }
+
                 // Implementing category filter
                 if (category) {
                     const categories = category.split(',').map(c => c.trim());
                     query.category = { $in: categories };
+                }
+
+                // Implementing price range filter
+                if (minPrice || maxPrice) {
+                    query.price = {};
+                    if (minPrice) query.price.$gte = parseFloat(minPrice);
+                    if (maxPrice) query.price.$lte = parseFloat(maxPrice);
                 }
 
                 // Implementing brand filter
@@ -60,14 +75,6 @@ async function run() {
                     skip: (page - 1) * limit,
                     limit: parseInt(limit),
                 };
-
-                // Implementing sorting
-                if (priceSort) {
-                    options.sort = { price: priceSort === 'asc' ? 1 : -1 };
-                }
-                if (dateSort) {
-                    options.sort = { creationDateTime: dateSort === 'asc' ? 1 : -1 };
-                }
 
                 const cursor = productCollection.find(query, options);
                 const products = await cursor.toArray();
