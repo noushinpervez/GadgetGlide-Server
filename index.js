@@ -43,14 +43,6 @@ async function run() {
                     ];
                 }
 
-                // Implementing sorting
-                if (priceSort) {
-                    options.sort = { price: priceSort === 'asc' ? 1 : -1 };
-                }
-                if (dateSort) {
-                    options.sort = { creationDateTime: dateSort === 'asc' ? 1 : -1 };
-                }
-
                 // Implementing category filter
                 if (category) {
                     const categories = category.split(',').map(c => c.trim());
@@ -76,11 +68,19 @@ async function run() {
                     limit: parseInt(limit),
                 };
 
+                // Implementing sorting
+                if (priceSort) {
+                    options.sort = { price: priceSort === 'asc' ? 1 : -1 };
+                }
+                if (dateSort) {
+                    options.sort = { creationDateTime: dateSort === 'asc' ? 1 : -1 };
+                }
+
                 const cursor = productCollection.find(query, options);
                 const products = await cursor.toArray();
                 const total = await productCollection.countDocuments(query);
 
-                res.json({ products, totalPages: Math.ceil(total / limit) });
+                res.json({ products, total, totalPages: Math.ceil(total / limit) });
             } catch (error) {
                 console.error(error);
                 res.status(500).send('Server error');
